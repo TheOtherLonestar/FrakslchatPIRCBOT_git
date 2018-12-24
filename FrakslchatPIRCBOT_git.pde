@@ -8,14 +8,14 @@ A port of the Fraksl Android App by Ella Jameson
  You need the pircbot JAVA library to make this work. 
  In you libraries folder make a folder called pircbot. 
  In the pircbot folder make a folder called library
- put the pircbot.jar file into that folder
+ put the pircbot.jar file into that folder  
+ 
+ pircbot.jar can be downloaded at. http://www.jibble.org/pircbot.php  
  
  The app also uses the processing.sound library. In the menu Sketch/import library/ Add Library 
- Search for sound under Filter search for "Sound" click on the Sound Library and press Install.
+ Search for "Sound" click on the Sound Library and press Install.
  
  Your main mic will slightly influence the Hue of the Fraksl effect
- 
- pircbot.jar can be downloaded at. http://www.jibble.org/pircbot.php
  
  Combined to create a Fraksl like experience that can be controlled via Twitch Chat
  
