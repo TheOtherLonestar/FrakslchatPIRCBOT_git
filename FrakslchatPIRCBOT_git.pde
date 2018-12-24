@@ -466,3 +466,4 @@ public boolean isInteger( String input ) {
 public boolean nodelay(long previous, int value) {
   return millis() - previous<value;
 }
+
