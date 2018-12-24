@@ -54,178 +54,184 @@ class MyBot extends PircBot {
   //reads new messages and if it's a command do stuff
   void onMessage(String channel, String sender, String login, String hostname, String message) {
 
-    //check is the message is a command then do the parse stuff
-    if (message.startsWith("!")) {
-      String value;
-      String[] messageArray = message.split(" ");
-      String command = messageArray[0];
+    //check if the message is a command then do the parse stuff. if not return
+    if (!message.startsWith("!")) {
+      return;
+    }
 
-      //checks to see if a value was sent with command
-      if (messageArray.length<2) {
-        value="1"; //if only command was sent then set value to 1
+
+    String value;
+    String[] messageArray = message.split(" ");
+    String command = messageArray[0];
+
+    //checks to see if a value was sent with command
+    if (messageArray.length<2) {
+      value="1"; //if only command was sent then set value to 1
+    }
+    //if value was sent set value to value sent
+    else {
+      value = messageArray[1];
+    }
+    print("Value ");
+    println(value); //prints value just so we know
+
+    //sends value to a function to check if the value is a number and not goblegook. Returns true if a number
+    boolean flag=isInteger(value);
+
+    if (flag)
+    {
+      VALUE = Integer.parseInt(value); //convert the string to an int
+      VALUE=abs(VALUE); //only positive numbers please
+    } 
+    //if bs instead of a number was set then the number is set to a default
+    else {
+      VALUE=5;
+    }
+
+    println("Value " + VALUE);
+    previous = millis();
+    color from = currentcolor;
+
+    switch(command.toUpperCase()) {
+
+    default:
+      break;
+
+    case "!TWISTLEFT":
+      bot.sendMessage(CHANNEL, "TWIST IT");
+      VALUE=constrain(VALUE, 0, 720);
+      float rad=VALUE*PI/180;
+      float toRotation=rotation+rad;
+
+      while (rotation < toRotation) { 
+        if ((toRotation - rotation) < .01) { 
+          rotation = toRotation;
+        } else { 
+          rotation += .01;
+        }
+        delay(10);
       }
-      //if value was sent set value to value sent
-      else {
-        value = messageArray[1];
+      return;
+
+    case "!TWISTRIGHT":
+      bot.sendMessage(CHANNEL, "TWIST IT");
+      VALUE=constrain(VALUE, 0, 720);
+      rad=VALUE*PI/180;
+      toRotation=rotation-rad;
+
+      while (rotation > toRotation) { 
+        if ((rotation - toRotation) < .01) { 
+          rotation = toRotation;
+        } else { 
+          rotation -= .01;
+        }
+        delay(10);
       }
-      print("Value ");
-      println(value); //prints value just so we know
+      return;
 
-      //sends value to a function to check if the value is a number and not goblegook. Returns true if a number
-      boolean flag=isInteger(value);
-
-      if (flag)
-      {
-        VALUE = Integer.parseInt(value); //convert the string to an int
-        VALUE=abs(VALUE); //only positive numbers please
-      } 
-      //if bs instead of a number was set then the number is set to a default
-      else {
-        VALUE=500;
+    case "!UP":
+      VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
+      VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
+      bot.sendMessage(CHANNEL, "UP");
+      while (nodelay(previous, VALUE)) {
+        y_pos -= translate_delta;
+        delay(20);
       }
+      return;
 
-      println("Value " + VALUE);
-      previous = millis();
-      color from = currentcolor;
-      switch(command.toUpperCase()) {
-
-      default:
-        break;
-
-      case "!TWISTLEFT":
-        bot.sendMessage(CHANNEL, "TWIST IT");
-        VALUE=constrain(VALUE, 0, 720);
-        float rad=VALUE*PI/180;
-        float toRotation=rotation+rad;
-
-        while (rotation < toRotation) { 
-          if ((toRotation - rotation) < .01) { 
-            rotation = toRotation;
-          } else { 
-            rotation += .01;
-          }
-          delay(10);
-        }
-        return;
-
-      case "!TWISTRIGHT":
-        bot.sendMessage(CHANNEL, "TWIST IT");
-        VALUE=constrain(VALUE, 0, 720);
-        rad=VALUE*PI/180;
-        toRotation=rotation-rad;
-
-        while (rotation > toRotation) { 
-          if ((rotation - toRotation) < .01) { 
-            rotation = toRotation;
-          } else { 
-            rotation -= .01;
-          }
-          delay(10);
-        }
-        return;
-
-      case "!UP":
-        VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
-        VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
-        bot.sendMessage(CHANNEL, "UP");
-        while (nodelay(previous, VALUE)) {
-          y_pos -= translate_delta;
-          delay(20);
-        }
-        return;
-
-      case "!DOWN":      
-        VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
-        VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge numberbot.sendMessage(CHANNEL, "DOWN");
-        while (nodelay(previous, VALUE)) {
-          y_pos += translate_delta;
-          delay(20);
-        }
-        return;
-
-      case "!LEFT":
-        VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
-        VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
-        bot.sendMessage(CHANNEL, "LEFT");
-        while (nodelay(previous, VALUE)) {
-          x_pos -= translate_delta;
-          delay(25);
-        }
-        return;
-
-      case "!RIGHT":
-        VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
-        VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
-        bot.sendMessage(CHANNEL, "RIGHT");
-        while (nodelay(previous, VALUE)) {
-          x_pos += translate_delta;
-          delay(15);
-        }
-        return;
-
-      case "!ZOOMIN":
-        VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
-        VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
-        bot.sendMessage(CHANNEL, "Magnify!");
-        while (nodelay(previous, VALUE)) {
-          zoom += zoom_delta;
-          zoom=abs(zoom);
-          println("zoom " + zoom);
-          if (zoom>0.9) {
-            zoom=0.9;
-          }
-          delay(25);
-        }
-        return;
-
-      case "!ZOOMOUT":
-        VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
-        VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
-        bot.sendMessage(CHANNEL, "Away!");
-        while (nodelay(previous, VALUE)) {
-          zoom -= zoom_delta;
-          zoom=abs(zoom);
-          println("zoom " + zoom);
-          if (zoom<0.2) {
-            zoom=0.2;
-          }
-          delay(25);
-        }
-        return;
-
-      case "!RED":
-        colorfader(from, red);
-
-        return;
-
-      case "!GREEN":
-        colorfader(from, green);
-
-        return;
-
-      case "!BLUE":
-        colorfader(from, blue);
-
-        return;
-
-      case "!PURPLE":
-        colorfader(from, purple);
-
-        return;
-
-      case "!WHITE":
-        colorfader(from, white);
-
-        return;
+    case "!DOWN":      
+      VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
+      VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge numberbot.sendMessage(CHANNEL, "DOWN");
+      while (nodelay(previous, VALUE)) {
+        y_pos += translate_delta;
+        delay(20);
       }
+      return;
+
+    case "!LEFT":
+      VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
+      VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
+      bot.sendMessage(CHANNEL, "LEFT");
+      while (nodelay(previous, VALUE)) {
+        x_pos -= translate_delta;
+        delay(25);
+      }
+      return;
+
+    case "!RIGHT":
+      VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
+      VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
+      bot.sendMessage(CHANNEL, "RIGHT");
+      while (nodelay(previous, VALUE)) {
+        x_pos += translate_delta;
+        delay(15);
+      }
+      return;
+
+    case "!ZOOMIN":
+      VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
+      VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
+      bot.sendMessage(CHANNEL, "Magnify!");
+      while (nodelay(previous, VALUE)) {
+        zoom += zoom_delta;
+        zoom=abs(zoom);
+        println("zoom " + zoom);
+        if (zoom>0.9) {
+          zoom=0.9;
+        }
+        delay(25);
+      }
+      return;
+
+    case "!ZOOMOUT":
+      VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
+      VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
+      bot.sendMessage(CHANNEL, "Away!");
+      while (nodelay(previous, VALUE)) {
+        zoom -= zoom_delta;
+        zoom=abs(zoom);
+        println("zoom " + zoom);
+        if (zoom<0.2) {
+          zoom=0.2;
+        }
+        delay(25);
+      }
+      return;
+
+    case "!RED":
+      colorfader(from, red);
+
+      return;
+
+    case "!GREEN":
+      colorfader(from, green);
+
+      return;
+
+    case "!BLUE":
+      colorfader(from, blue);
+
+      return;
+
+    case "!PURPLE":
+      colorfader(from, purple);
+
+      return;
+
+    case "!WHITE":
+      colorfader(from, white);
+
+      return;
     }
   }
+
 
   //if you get disconnected reconnect
   public void onDisconnect() {
     connectBot();
   }
 }
+
 void colorfader(color from, color to) {
   for (int i =0; i<100; i=i+1) {
     float amount=map(i, 0.0, 100.0, 0.0, 1.0);
