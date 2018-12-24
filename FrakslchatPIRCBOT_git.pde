@@ -42,7 +42,7 @@ color green = color(0, 255, 0);
 color blue = color(0, 0, 255);
 color purple = color(255, 0, 255);
 color white = color(255, 255, 255);
-color current= color(255, 255, 255);
+color currentcolor= color(255, 255, 255);
 
 //initialize bot
 MyBot bot = new MyBot();
@@ -86,7 +86,7 @@ class MyBot extends PircBot {
 
       println("Value " + VALUE);
       previous = millis();
-      color from = current;
+      color from = currentcolor;
       switch(command.toUpperCase()) {
 
       default:
@@ -106,10 +106,6 @@ class MyBot extends PircBot {
           }
           delay(10);
         }
-
-
-
-
         return;
 
       case "!TWISTRIGHT":
@@ -126,8 +122,8 @@ class MyBot extends PircBot {
           }
           delay(10);
         }
-
         return;
+
       case "!UP":
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
@@ -137,6 +133,7 @@ class MyBot extends PircBot {
           delay(20);
         }
         return;
+
       case "!DOWN":      
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge numberbot.sendMessage(CHANNEL, "DOWN");
@@ -145,6 +142,7 @@ class MyBot extends PircBot {
           delay(20);
         }
         return;
+
       case "!LEFT":
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
@@ -154,6 +152,7 @@ class MyBot extends PircBot {
           delay(25);
         }
         return;
+
       case "!RIGHT":
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
@@ -163,6 +162,7 @@ class MyBot extends PircBot {
           delay(15);
         }
         return;
+
       case "!ZOOMIN":
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
@@ -177,6 +177,7 @@ class MyBot extends PircBot {
           delay(25);
         }
         return;
+
       case "!ZOOMOUT":
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
@@ -191,46 +192,30 @@ class MyBot extends PircBot {
           delay(25);
         }
         return;
+
       case "!RED":
-
-        for (float i =0; i<100; i=i+1) {
-          float amount=map(i, 0.0, 100.0, 0.0, 1.0);
-          current=lerpColor(from, red, amount);
-          delay(15);
-        }
+        colorfader(from, red);
 
         return;
+
       case "!GREEN":
-        for (float i =0; i<100; i=i+1) {
-          float amount=map(i, 0.0, 100.0, 0.0, 1.0);
-          current=lerpColor(from, green, amount);
-          delay(15);
-        }
-        return;
-      case "!BLUE":
+        colorfader(from, green);
 
-        for (float i =0; i<100; i=i+1) {
-          float amount=map(i, 0.0, 100.0, 0.0, 1.0);
-          current=lerpColor(from, blue, amount);
-          delay(15);
-        }
+        return;
+
+      case "!BLUE":
+        colorfader(from, blue);
+
         return;
 
       case "!PURPLE":
+        colorfader(from, purple);
 
-        for (float i =0; i<100; i=i+1) {
-          float amount=map(i, 0.0, 100.0, 0.0, 1.0);
-          current=lerpColor(from, purple, amount);
-          delay(15);
-        }
         return;
-      case "!WHITE":
 
-        for (float i =0; i<100; i=i+1) {
-          float amount=map(i, 0.0, 100.0, 0.0, 1.0);
-          current=lerpColor(from, white, amount);
-          delay(15);
-        }
+      case "!WHITE":
+        colorfader(from, white);
+
         return;
       }
     }
@@ -241,7 +226,13 @@ class MyBot extends PircBot {
     connectBot();
   }
 }
-
+void colorfader(color from, color to) {
+  for (int i =0; i<100; i=i+1) {
+    float amount=map(i, 0.0, 100.0, 0.0, 1.0);
+    currentcolor=lerpColor(from, to, amount);
+    delay(15);
+  }
+}
 
 
 void mirror_screen()
@@ -427,15 +418,14 @@ void setup()
 boolean save_frame;
 static float previousVolume; 
 float adjust = 0.30; 
-void draw()
-{
+void draw() {
   // loudness.analyze() return a value between 0 and 1. To adjust
   // the scaling and mapping of an ellipse we scale from 0 to 0.5
   float volume = loudness.analyze();
   volume = previousVolume * (1 - adjust) + volume * adjust;
   int size = int(map(volume, 0, 0.5, 150, 255));
 
-  background(current);
+  background(currentcolor);
   tint(255, size);
   key_update();
 
@@ -452,6 +442,7 @@ void draw()
     delay(1000);
   }
 }
+
 public boolean isInteger( String input ) {
   try {
     Integer.parseInt( input );
@@ -466,4 +457,3 @@ public boolean isInteger( String input ) {
 public boolean nodelay(long previous, int value) {
   return millis() - previous<value;
 }
-
