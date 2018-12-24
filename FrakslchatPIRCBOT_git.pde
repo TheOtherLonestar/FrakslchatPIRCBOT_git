@@ -74,7 +74,7 @@ class MyBot extends PircBot {
       //sends value to a function to check if the value is a number and not goblegook. Returns true if a number
       boolean flag=isInteger(value);
 
-      if (flag==true)
+      if (flag)
       {
         VALUE = Integer.parseInt(value); //convert the string to an int
         VALUE=abs(VALUE); //only positive numbers please
@@ -84,7 +84,9 @@ class MyBot extends PircBot {
         VALUE=500;
       }
 
-      println(VALUE);
+      println("Value " + VALUE);
+      previous = millis();
+      color from = current;
       switch(command.toUpperCase()) {
 
       default:
@@ -92,7 +94,6 @@ class MyBot extends PircBot {
 
       case "!TWISTLEFT":
         bot.sendMessage(CHANNEL, "TWIST IT");
-        previous=millis();
         VALUE=constrain(VALUE, 0, 720);
         float rad=VALUE*PI/180;
         float toRotation=rotation+rad;
@@ -113,7 +114,6 @@ class MyBot extends PircBot {
 
       case "!TWISTRIGHT":
         bot.sendMessage(CHANNEL, "TWIST IT");
-        previous=millis();
         VALUE=constrain(VALUE, 0, 720);
         rad=VALUE*PI/180;
         toRotation=rotation-rad;
@@ -132,7 +132,6 @@ class MyBot extends PircBot {
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
         bot.sendMessage(CHANNEL, "UP");
-        previous=millis();
         while (nodelay(previous, VALUE)) {
           y_pos -= translate_delta;
           delay(20);
@@ -141,7 +140,6 @@ class MyBot extends PircBot {
       case "!DOWN":      
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge numberbot.sendMessage(CHANNEL, "DOWN");
-        previous=millis();
         while (nodelay(previous, VALUE)) {
           y_pos += translate_delta;
           delay(20);
@@ -151,7 +149,6 @@ class MyBot extends PircBot {
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
         bot.sendMessage(CHANNEL, "LEFT");
-        previous=millis();
         while (nodelay(previous, VALUE)) {
           x_pos -= translate_delta;
           delay(25);
@@ -161,7 +158,6 @@ class MyBot extends PircBot {
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
         bot.sendMessage(CHANNEL, "RIGHT");
-        previous=millis();
         while (nodelay(previous, VALUE)) {
           x_pos += translate_delta;
           delay(15);
@@ -171,7 +167,6 @@ class MyBot extends PircBot {
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
         bot.sendMessage(CHANNEL, "Magnify!");
-        previous=millis();
         while (nodelay(previous, VALUE)) {
           zoom += zoom_delta;
           zoom=abs(zoom);
@@ -186,7 +181,6 @@ class MyBot extends PircBot {
         VALUE = VALUE*1000;// multiply value by 1000 to convert seconds to milliseconds. 
         VALUE = constrain(VALUE, 0, 3000); //constrains value to 3 seconds so chat can't send a huge number
         bot.sendMessage(CHANNEL, "Away!");
-        previous=millis();
         while (nodelay(previous, VALUE)) {
           zoom -= zoom_delta;
           zoom=abs(zoom);
@@ -198,9 +192,8 @@ class MyBot extends PircBot {
         }
         return;
       case "!RED":
-        
+
         for (float i =0; i<100; i=i+1) {
-          color from =current;
           float amount=map(i, 0.0, 100.0, 0.0, 1.0);
           current=lerpColor(from, red, amount);
           delay(15);
@@ -208,18 +201,15 @@ class MyBot extends PircBot {
 
         return;
       case "!GREEN":
-        
         for (float i =0; i<100; i=i+1) {
-          color from =current;
           float amount=map(i, 0.0, 100.0, 0.0, 1.0);
           current=lerpColor(from, green, amount);
           delay(15);
         }
         return;
       case "!BLUE":
-        
+
         for (float i =0; i<100; i=i+1) {
-          color from =current;
           float amount=map(i, 0.0, 100.0, 0.0, 1.0);
           current=lerpColor(from, blue, amount);
           delay(15);
@@ -227,18 +217,16 @@ class MyBot extends PircBot {
         return;
 
       case "!PURPLE":
-        
+
         for (float i =0; i<100; i=i+1) {
-          color from =current;
           float amount=map(i, 0.0, 100.0, 0.0, 1.0);
           current=lerpColor(from, purple, amount);
           delay(15);
         }
         return;
-        case "!WHITE":
-        
+      case "!WHITE":
+
         for (float i =0; i<100; i=i+1) {
-          color from =current;
           float amount=map(i, 0.0, 100.0, 0.0, 1.0);
           current=lerpColor(from, white, amount);
           delay(15);
@@ -250,18 +238,7 @@ class MyBot extends PircBot {
 
   //if you get disconnected reconnect
   public void onDisconnect() {
-    try {
-      bot.connect("irc.twitch.tv", 6667, OAUTH);
-    } 
-
-    catch (IOException e) {
-      e.printStackTrace();
-    } 
-    catch (IrcException e) {
-      e.printStackTrace();
-    }
-    bot.joinChannel(CHANNEL);
-    bot.sendMessage(CHANNEL, "Namaste.");
+    connectBot();
   }
 }
 
@@ -400,6 +377,17 @@ void key_update()
     save_frame = true;
   }
 }
+void connectBot() {
+  try {
+    bot.connect("irc.twitch.tv", 6667, OAUTH);
+  }
+  catch (Exception e) {
+    e.printStackTrace();
+  }
+
+  bot.joinChannel(CHANNEL);
+  bot.sendMessage(CHANNEL, "Namaste");
+}
 
 void setup()
 {
@@ -408,18 +396,7 @@ void setup()
   // Enable debugging output.
   bot.setVerbose(true);
 
-  try {
-    bot.connect("irc.twitch.tv", 6667, OAUTH);
-  } 
-
-  catch (IOException e) {
-    e.printStackTrace();
-  } 
-  catch (IrcException e) {
-    e.printStackTrace();
-  }
-  bot.joinChannel(CHANNEL);
-  bot.sendMessage(CHANNEL, "Namaste.");
+  connectBot();
 
   background(0);
   frameRate(60);
@@ -489,3 +466,4 @@ public boolean isInteger( String input ) {
 public boolean nodelay(long previous, int value) {
   return millis() - previous<value;
 }
+
