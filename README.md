@@ -27,6 +27,9 @@ A Fraksl like Processing Sketch that can be controlled by Twitch Chat made for c
  
  pircbot.jar can be downloaded at. http://www.jibble.org/pircbot.php  
  
+ The app also uses the processing.sound library. In the menu Sketch/import library/ Add Library 
+ Search for sound under Filter search for "Sound" click on the Sound Library and press Install.  
+ 
  TO MAKE IT WORK WITH YOUR CHANNEL AND BOT.  
  Go into the config tab/file and change the botname, oauth, and channel name to your bot's and channel's info.  
  get your oauth here https://twitchapps.com/tmi/
